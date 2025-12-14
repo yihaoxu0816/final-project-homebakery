@@ -26,6 +26,9 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 
+# secrets
+Secrets.js
+
 # macOS
 .DS_Store
 *.pem
