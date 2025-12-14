@@ -10,7 +10,7 @@ import RecipeItem from './components/RecipeItem';
 
 
 function AddOrderScreen({ navigation, route }) {
-  const item = route.params?.item; // Get order for editing
+  const item = route.params?.item;
   const dispatch = useDispatch();
 
   const orders = useSelector((state) => state.orders.value);
@@ -27,7 +27,6 @@ function AddOrderScreen({ navigation, route }) {
     dispatch(getShoppingItemsThunk());
   }, []);
 
-  // Auto-calculate total price when order changes
   useEffect(() => {
     calculateTotalPrice();
   }, [selectedRecipes, recipes]);
@@ -40,7 +39,7 @@ function AddOrderScreen({ navigation, route }) {
     
     if (existingIndex >= 0) {
       const updatedItems = [...selectedRecipes];
-      // Create a new object instead of mutating (fixes read-only error)
+
       updatedItems[existingIndex] = { 
         ...updatedItems[existingIndex], 
         quantity: updatedItems[existingIndex].quantity + 1 
@@ -60,11 +59,10 @@ function AddOrderScreen({ navigation, route }) {
     if (existingIndex >= 0) {
       const currentQuantity = selectedRecipes[existingIndex].quantity;
       if (currentQuantity === 1) {
-        // Remove item if quantity becomes 0
+
         setSelectedRecipes(selectedRecipes.filter(item => item.recipeKey !== recipe.key));
       } else {
         const updatedItems = [...selectedRecipes];
-        // Create a new object instead of mutating (fixes read-only error)
         updatedItems[existingIndex] = { 
           ...updatedItems[existingIndex], 
           quantity: updatedItems[existingIndex].quantity - 1 
@@ -85,7 +83,6 @@ function AddOrderScreen({ navigation, route }) {
   const calculateTotalPrice = () => {
     let total = 0;
     selectedRecipes.forEach(item => {
-      // Find recipe from Redux store (not dispatch)
       const recipe = recipes.find(r => r.key === item.recipeKey);
       if (recipe) {
         total += Number(recipe.sellingPrice) * Number(item.quantity);
@@ -104,45 +101,41 @@ function AddOrderScreen({ navigation, route }) {
     };
     
     if (item && item.key) {
-      // Update existing order
-      dispatch(updateOrderThunk({ ...orderData, key: item.key }));
+      dispatch(updateOrderThunk({ 
+        ...orderData, 
+        key: item.key,
+        status: item.status || 'ongoing',
+        userId: item.userId
+      }));
     } else {
-      // Add new order
       dispatch(addOrderThunk(orderData));
     }
     
-    // Add ingredients to shopping list
     addIngredients(selectedRecipes);
     
     navigation.goBack();
   }
 
   const addIngredients = (orderItems) => {
-    // First, aggregate all ingredients from the order
     const combinedIngredients = [];
     
     orderItems.forEach(orderItem => {
-      // Find the recipe from the recipes list
       const recipe = recipes.find(r => r.key === orderItem.recipeKey);
       
       if (recipe && recipe.ingredients) {
         const multiplier = Number(orderItem.quantity);
         
-        // Process each ingredient in the recipe
         recipe.ingredients.forEach(ingredient => {
           const neededQuantity = Number(ingredient.amount) * multiplier;
           
-          // Check if this ingredient is already in our combined list (case-insensitive)
           const existingIngredient = combinedIngredients.find(
             item => item.ingredient?.toLowerCase() === ingredient.name?.toLowerCase() 
                 && item.unit?.toLowerCase() === ingredient.unit?.toLowerCase()
           );
           
           if (existingIngredient) {
-            // Add to existing amount
             existingIngredient.needed += neededQuantity;
           } else {
-            // Add new ingredient to the list
             combinedIngredients.push({
               ingredient: ingredient.name,
               needed: neededQuantity,
@@ -153,23 +146,20 @@ function AddOrderScreen({ navigation, route }) {
       }
     });
     
-    // Now process the combined ingredients and update Firebase
+    // process the combined ingredients and update Firebase
     combinedIngredients.forEach(combinedItem => {
-      // Check if ingredient already exists in shopping list by matching NAME and UNIT (case-insensitive)
       const existingItem = shoppingList.find(
         item => item.ingredient?.toLowerCase() === combinedItem.ingredient?.toLowerCase() 
             && item.unit?.toLowerCase() === combinedItem.unit?.toLowerCase()
       );
       
       if (existingItem) {
-        // Update existing item - add to the needed quantity
         const updatedItem = {
           ...existingItem,
           needed: Number(existingItem.needed) + combinedItem.needed
         };
         dispatch(updateShoppingItemThunk(updatedItem));
       } else {
-        // Add new item to shopping list
         dispatch(addShoppingItemThunk(combinedItem));
       }
     });

@@ -5,7 +5,7 @@ function RecipeItem({ recipe, quantity, onAdd, onMinus }) {
   return (
     <View style={styles.recipeItemContainer}>
 
-      {/* Recipe Item Header (Image, Text + Price) */}
+      {/* Recipe Item Header */}
       <View style={styles.recipeItemHeader}>
         <Image 
           source={{uri: recipe.imageRef || 'https://via.placeholder.com/150'}} 

@@ -9,7 +9,6 @@ function InventoryOverlay({ visible, onClose, item }) {
   const dispatch = useDispatch();
   const [currentAmount, setCurrentAmount] = useState(0);
 
-  // Initialize with item's current count when item changes
   useEffect(() => {
     if (item) {
       setCurrentAmount(item.count || 0);

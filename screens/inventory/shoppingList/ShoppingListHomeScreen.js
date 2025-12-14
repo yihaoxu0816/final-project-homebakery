@@ -31,7 +31,6 @@ function ShoppingListHomeScreen(props) {
         setOverlayVisible(true);
     };
 
-    // Calculate how much more is needed after checking inventory
     const calculateNeededMore = (shoppingItem) => {
         const matchingInventoryItems = inventoryList.filter(
             invItem => invItem.ingredient.toLowerCase() === shoppingItem.ingredient.toLowerCase() 

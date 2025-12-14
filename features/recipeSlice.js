@@ -68,7 +68,6 @@ export const deleteRecipeThunk = createAsyncThunk('recipes/deleteRecipe', async 
     }
   }
   
-  // Delete the recipe document from Firestore
   const docToDelete = doc(db, 'final-project-recipes', recipe.key);
   await deleteDoc(docToDelete);
   return recipe;

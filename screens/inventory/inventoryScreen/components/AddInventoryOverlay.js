@@ -45,7 +45,6 @@ function AddInventoryOverlay({ visible, onClose }) {
   };
 
   const handleClose = () => {
-    // Reset form on close
     setIngredientName('');
     setAmount(0);
     setUnit('');

@@ -19,7 +19,6 @@ function OngoingOrdersScreen(props) {
     const inventoryList = useSelector((state) => state.inventory.value);
     const shoppingList = useSelector((state) => state.shopping.value);
 
-    // Filter only ongoing orders
     const ongoingOrders = orders.filter(order => order.status === 'ongoing');
 
     useEffect(() => {
@@ -30,7 +29,6 @@ function OngoingOrdersScreen(props) {
     }, []);
 
     const handleCompleteOrder = (order) => {
-        // Step 1: Aggregate ingredients from the order
         const aggregatedIngredients = [];
         
         order.orderItems.forEach(orderItem => {
@@ -57,7 +55,7 @@ function OngoingOrdersScreen(props) {
             }
         });
 
-        // Check if there's enough inventory for all ingredients
+        // Check inventory for all ingredients
         const insufficientIngredients = [];
         
         aggregatedIngredients.forEach(aggItem => {
@@ -78,8 +76,6 @@ function OngoingOrdersScreen(props) {
                 });
             }
         });
-
-        // If any ingredients are insufficient, show alert and stop
         if (insufficientIngredients.length > 0) {
             const message = insufficientIngredients.map(item => 
                 `${item.ingredient}: Need ${item.needed}${item.unit}, only have ${item.available}${item.unit}`
@@ -90,10 +86,10 @@ function OngoingOrdersScreen(props) {
                 `Cannot complete order. Missing ingredients:\n\n${message}`,
                 [{ text: 'OK' }]
             );
-            return; // Stop execution
+            return;
         }
 
-        // Step 2: Deduct from inventory
+        // Deduct from inventory
         aggregatedIngredients.forEach(aggregatedItem => {
             const inventoryItem = inventoryList.find(
                 item => item.ingredient?.toLowerCase() === aggregatedItem.ingredient?.toLowerCase() && item.unit === aggregatedItem.unit
@@ -114,7 +110,7 @@ function OngoingOrdersScreen(props) {
             }
         });
 
-        // Step 3: Deduct from shopping list
+        // Deduct from shopping list
         aggregatedIngredients.forEach(aggregatedItem => {
             const shoppingItem = shoppingList.find(
                 item => item.ingredient?.toLowerCase() === aggregatedItem.ingredient?.toLowerCase() 
@@ -142,7 +138,7 @@ function OngoingOrdersScreen(props) {
             }
         });
 
-        // Step 4: Update order status to 'completed'
+        // Update order status
         const updatedOrder = {
             ...order,
             status: 'completed'

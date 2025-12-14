@@ -13,7 +13,6 @@ function CompletedOrdersScreen(props) {
 
     const orders = useSelector((state) => state.orders.value);
 
-    // Filter only completed orders
     const completedOrders = orders.filter(order => order.status === 'completed');
 
     useEffect(() => {

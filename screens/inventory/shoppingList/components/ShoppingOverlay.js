@@ -28,8 +28,8 @@ function ShoppingOverlay({ visible, onClose, item }) {
         unit: item.unit
       };
       dispatch(addInventoryItemThunk(inventoryItem));
-      setAmountBought(0); // Reset the input
-      onClose(); // Close the overlay
+      setAmountBought(0);
+      onClose();
     }
   };
 
