@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Button, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Button, TouchableOpacity, FlatList, Alert } from 'react-native';
 import RecipeCard from './components/RecipeCard';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { globalStyles } from '../../styles/globalStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRecipesThunk } from '../../features/recipeSlice';
 import { useEffect } from 'react';
+import { signOut } from '../../auth/AuthManager';
 
 function RecipesHomeScreen(props) {
 	const dispatch = useDispatch();
@@ -16,6 +17,17 @@ function RecipesHomeScreen(props) {
 			dispatch(getRecipesThunk());
 	}, []);
 
+	const handleSignOut = async () => {
+		try {
+			await signOut();
+			navigation.reset({
+				index: 0,
+				routes: [{ name: 'Login' }],
+			});
+		} catch (error) {
+			Alert.alert('Error', 'Failed to sign out. Please try again.');
+		}
+	};
 
 	return (
 		<View style={globalStyles.screenContainer}>
@@ -43,6 +55,10 @@ function RecipesHomeScreen(props) {
 				onPress={() => navigation.navigate('Add Recipe')}
 			>
 				<MaterialCommunityIcons name="plus" size={48} color="white" />
+			</TouchableOpacity>
+
+			<TouchableOpacity onPress={handleSignOut}>
+				<Text style={styles.signOutButtonText}>Sign Out</Text>
 			</TouchableOpacity>
 		</View>
 	);
@@ -82,6 +98,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#999',
     textAlign: 'center',
+  },
+  signOutButtonText: {
+    color: 'red',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 14,
+    marginBottom: 20,
   },
 });
 

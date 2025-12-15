@@ -4,7 +4,6 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addInventoryItemThunk } from '../../../../features/inventorySlice';
-import { deleteShoppingItemThunk } from '../../../../features/shoppingSlice';
 
 function ShoppingOverlay({ visible, onClose, item }) {
   const dispatch = useDispatch();
@@ -31,11 +30,6 @@ function ShoppingOverlay({ visible, onClose, item }) {
       setAmountBought(0);
       onClose();
     }
-  };
-
-  const handleDelete = () => {
-    dispatch(deleteShoppingItemThunk(item));
-    onClose();
   };
 
   return (
@@ -92,10 +86,6 @@ function ShoppingOverlay({ visible, onClose, item }) {
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={styles.deleteButtonText}>Delete from shopping list</Text>
-        </TouchableOpacity>
         
     </Overlay>
   );
@@ -216,20 +206,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-
-  deleteButton: {
-    backgroundColor: 'transparent',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 100,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-
-  deleteButtonText: {
-    color: '#E56442',
-    fontSize: 14,
   },
 });
 
