@@ -57,7 +57,10 @@ function RecipesHomeScreen(props) {
 				<MaterialCommunityIcons name="plus" size={48} color="white" />
 			</TouchableOpacity>
 
-			<TouchableOpacity onPress={handleSignOut}>
+			<TouchableOpacity 
+				style={styles.signOutButton}
+				onPress={handleSignOut}
+			>
 				<Text style={styles.signOutButtonText}>Sign Out</Text>
 			</TouchableOpacity>
 		</View>
@@ -99,13 +102,16 @@ const styles = StyleSheet.create({
     color: '#999',
     textAlign: 'center',
   },
+  signOutButton: {
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
   signOutButtonText: {
     color: 'red',
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
     marginTop: 14,
-    marginBottom: 20,
   },
 });
 
